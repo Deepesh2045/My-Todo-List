@@ -32,7 +32,7 @@ router.post(
 );
 
 // Get Task Details
-router.get("/details/", async (req, res) => {
+router.get("/details", async (req, res) => {
   //extract product id from req.params
   const taskId = req.params.id;
   //find task

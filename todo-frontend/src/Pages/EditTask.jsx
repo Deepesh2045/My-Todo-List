@@ -1,50 +1,45 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  FormHelperText,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { Formik } from "formik";
-import React from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useNavigate, useParams } from "react-router-dom";
-import * as Yup from "yup";
-import $axios from "../lib/axios.instance";
-import Loading from "./Loading";
+import React from 'react'
+import { useMutation, useQuery } from 'react-query';
+import $axios from '../lib/axios.instance';
+import { Box, Button, FormControl, FormHelperText, TextField, Typography } from '@mui/material';
+import { Formik } from 'formik';
+import *as Yup from "yup"
+import { useNavigate, useParams } from 'react-router-dom';
 
-const EditTodo = () => {
-  const params = useParams();
-  const taskId = params?.id;
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+export const EditTask = (props) => {
+    const navigate = useNavigate()
+
+    // For Get Edit Details
+    const params = useParams();
+    const taskId = params?.id;
+    const {  data } = useQuery({
+        queryKey: ["edit-details"],
+        queryFn: async () => {
+          return await $axios.get(`/details/edit/${taskId}`);
+        },
+      });
+
+    const taskDetails = data?.data?.TaskDetails;
+    console.log(taskDetails)
 
 
-  const { isLoading, isError, error, data } = useQuery({
-    queryKey: ["edit-details"],
-    queryFn: async () => {
-      return await $axios.get(`/details/edit/${taskId}`);
-    },
-  });
-  const TaskDetails = data?.data?.TaskDetails;
 
-  const { isLoading: editLoading, mutate } = useMutation({
-    mutationKey: ["edit"],
-    mutationFn: async (values) => {
-      return await $axios.put(`/edit/${taskId}`, values);
-    },
-    onSuccess: (res) => {
-      queryClient.invalidateQueries("todo-list");
-      navigate("/home");
-    },
-  });
-if(isLoading || editLoading){
-  return <Loading/>
-}
+    //  For Edit
+     const { mutate:mutateEdit, data:editData} = useMutation({
+        mutationKey: ["add-task"],
+        mutationFn: async (values) => {
+          return await $axios.put(`http://localhost:8080/edit/${taskId}`,values);
+        },
+        onSuccess:()=>{
+            navigate("/details")
+            
+        }
+       
+      });
+  
   return (
     <>
-      <Box
+    <Box
         sx={{
           background: "",
           height: "450px",
@@ -62,15 +57,15 @@ if(isLoading || editLoading){
         <Formik
           enableReinitialize
           initialValues={{
-            task: TaskDetails?.task || "",
-            description: TaskDetails?.description || "",
+            task: taskDetails?.task || "",
+            description:taskDetails?.description || "",
           }}
           validationSchema={Yup.object({
             task: Yup.string().required("Task is required"),
             description: Yup.string().required("Description is required"),
           })}
           onSubmit={(values) => {
-            mutate(values);
+            mutateEdit(values);
           }}
         >
           {(formik) => (
@@ -128,8 +123,8 @@ if(isLoading || editLoading){
           )}
         </Formik>
       </Box>
+    
+    
     </>
-  );
-};
-
-export default EditTodo;
+  )
+}

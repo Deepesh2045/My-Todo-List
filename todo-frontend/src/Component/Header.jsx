@@ -16,7 +16,7 @@ import Main from "./Main";
 import LogOutConfirmation from "./LogOutConfirmation";
 import { Link, useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 
 const pages = [
   {
@@ -59,10 +59,12 @@ const ResponsiveAppBar = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{background:"#0b2c51"}}>
+      <AppBar position="static" sx={{ background: "#0b2c51",width:"100%" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <BookmarkAddedIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+            <BookmarkAddedIcon
+              sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
+            />
             <Typography
               variant="h6"
               noWrap
@@ -111,7 +113,7 @@ const ResponsiveAppBar = () => {
                 }}
               >
                 {pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu} >
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">{page.home}</Typography>
                     <Typography textAlign="center">{page.about}</Typography>
                     <Typography textAlign="center">{page.contact}</Typography>
@@ -119,7 +121,9 @@ const ResponsiveAppBar = () => {
                 ))}
               </Menu>
             </Box>
-            <BookmarkAddedIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+            <BookmarkAddedIcon
+              sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
+            />
             <Typography
               variant="h5"
               noWrap
@@ -138,12 +142,18 @@ const ResponsiveAppBar = () => {
             >
               TODO
             </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" },justifyContent:"end" }}>
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: { xs: "none", md: "flex" },
+                justifyContent: "end",
+              }}
+            >
               {pages.map((page) => (
                 <Box
                   key={page}
                   onClick={handleCloseNavMenu}
-                  sx={{ margin: "10px", color: "red"}}
+                  sx={{ margin: "10px", color: "red" }}
                 >
                   <Link to={"/"}>
                     <Typography textAlign="center" sx={{ color: "white" }}>
@@ -190,12 +200,16 @@ const ResponsiveAppBar = () => {
               >
                 {settings.map((setting) => (
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    {email === "deepesh@gmail.com" &&
-                    <Typography textAlign="center" onClick={()=>{
-                      navigate("/home")
-                    }}>
-                      {setting.profile}
-                    </Typography>}
+                    {email === "deepesh@gmail.com" && (
+                      <Typography
+                        textAlign="center"
+                        onClick={() => {
+                          navigate("/home");
+                        }}
+                      >
+                        {setting.profile}
+                      </Typography>
+                    )}
                     <Typography textAlign="center">
                       {setting.account}
                     </Typography>
@@ -217,15 +231,14 @@ const ResponsiveAppBar = () => {
                   marginLeft: "10px",
                   cursor: "pointer",
                 }}
-              onClick={()=>{
-                navigate("/login")
-              }}/>
+                onClick={() => {
+                  navigate("/login");
+                }}
+              />
             )}
           </Toolbar>
         </Container>
       </AppBar>
-
-  
     </>
   );
 };

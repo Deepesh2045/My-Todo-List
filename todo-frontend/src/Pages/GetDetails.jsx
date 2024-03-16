@@ -1,50 +1,57 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  FormHelperText,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { Formik } from "formik";
-import React from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useNavigate, useParams } from "react-router-dom";
-import * as Yup from "yup";
-import $axios from "../lib/axios.instance";
-import Loading from "./Loading";
+import React from 'react'
+import { useMutation, useQuery } from 'react-query';
+import { useNavigate, useParams } from 'react-router-dom';
+import $axios from '../lib/axios.instance';
+import { Box, Button, FormControl, FormHelperText, TextField, Typography } from '@mui/material';
+import { Formik } from 'formik';
+import *as Yup from "yup"
+import { EditTask } from './EditTask';
 
-const EditTodo = () => {
-  const params = useParams();
-  const taskId = params?.id;
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+const GetDetails = () => {
+    const navigate = useNavigate()
+
+     // add
+     const { mutate } = useMutation({
+        mutationKey: ["add-task"],
+        mutationFn: async (values) => {
+          return await $axios.post("/add", values);
+        },
+        onSuccess: (response) => {
+          console.log(response);
+          location.reload()
+        },
+      });
+      // For Delete
+      const params = useParams();
+    const taskId = params?.id;
+      const { mutate:mutateDelete } = useMutation({
+        mutationKey: ["add-task"],
+        mutationFn: async (_id) => {
+          return await $axios.delete(`http://localhost:8080/delete/${_id}`);
+        },
+        onSuccess: (response) => {
+          console.log(response);
+          location.reload()
+        },
+      });
 
 
-  const { isLoading, isError, error, data } = useQuery({
-    queryKey: ["edit-details"],
-    queryFn: async () => {
-      return await $axios.get(`/details/edit/${taskId}`);
-    },
-  });
-  const TaskDetails = data?.data?.TaskDetails;
+// Get Details
+    
+    const {  data } = useQuery({
+      queryKey: ["edit-details"],
+      queryFn: async (values) => {
+        return await $axios.get("/details", values);
+      },
+    });
+  const taskDetails = data?.data?.TaskDetails;
+  
 
-  const { isLoading: editLoading, mutate } = useMutation({
-    mutationKey: ["edit"],
-    mutationFn: async (values) => {
-      return await $axios.put(`/edit/${taskId}`, values);
-    },
-    onSuccess: (res) => {
-      queryClient.invalidateQueries("todo-list");
-      navigate("/home");
-    },
-  });
-if(isLoading || editLoading){
-  return <Loading/>
-}
+ 
   return (
     <>
-      <Box
+
+<Box
         sx={{
           background: "",
           height: "450px",
@@ -62,8 +69,8 @@ if(isLoading || editLoading){
         <Formik
           enableReinitialize
           initialValues={{
-            task: TaskDetails?.task || "",
-            description: TaskDetails?.description || "",
+            task:  "",
+            description: "",
           }}
           validationSchema={Yup.object({
             task: Yup.string().required("Task is required"),
@@ -128,8 +135,21 @@ if(isLoading || editLoading){
           )}
         </Formik>
       </Box>
-    </>
-  );
-};
 
-export default EditTodo;
+
+
+    {taskDetails && taskDetails.map((item) => {
+    return <Box><h1 key={item._id}>{item.task}</h1>
+    <Button variant='contained' onClick={()=>{
+        mutateDelete(item._id)
+    }}>Delete</Button>
+    <Button variant='contained'color='success'onClick={()=>{
+        navigate(`/edit/${item._id}`)
+    }} >Edit</Button>
+    </Box>
+})}
+    </>
+  )
+}
+
+export default GetDetails

@@ -30,8 +30,12 @@ const TimeWithDay = () => {
   const greetingMessage = getGreetingMessage();
 
   return (
-    <Grid container alignItems="center" sx={{background:"",height:"88dvh",padding:"10px"}}>
-      <Grid item lg={6} sx={{margin:"auto"}}>
+    <Grid
+      container
+      alignItems="center"
+      sx={{ background: "", height: "88dvh", padding: "10px" }}
+    >
+      <Grid item lg={6} sx={{ margin: "auto" }}>
         <Typography variant="h3" sx={{ fontWeight: "50" }}>
           {greetingMessage} Deepesh
         </Typography>
@@ -44,7 +48,7 @@ const TimeWithDay = () => {
         </Typography>
       </Grid>
 
-      <Grid item lg={6} sx={{margin:"auto",padding:'10px'}}>
+      <Grid item lg={6} sx={{ margin: "auto", padding: "10px" }}>
         <img src="https://i.ibb.co/NVjQq2S/img.png" alt="" width="70%" />
       </Grid>
     </Grid>

@@ -1,4 +1,3 @@
-import Details from "../Component/Details";
 import EditTodo from "../Component/EditTodo";
 import Home from "../Component/Home";
 import Login from "../Component/Login";
@@ -7,7 +6,7 @@ import Register from "../Component/Register";
 import MainLayout from "../Layout/MainLayout";
 
 
-const mainRoutes = [
+const mainRoutes =[
   {
     path:"/",
     element:<MainLayout/>,
@@ -33,13 +32,11 @@ const mainRoutes = [
       {
         path:"login",
         element:<Login/>
-      }
-      
-     
+      },  
+
     ]
   }
-  
- 
-  
 ];
+
+
 export default mainRoutes;
