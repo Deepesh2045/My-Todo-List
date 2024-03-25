@@ -1,43 +1,58 @@
 import {
   Box,
-    Button,
-    FormControl,
-    FormHelperText,
-    Grid,
-    TextField,
-    Typography,
-  } from "@mui/material";
-  import { Formik } from "formik";
-  import React from "react";
-  import { useMutation } from "react-query";
-  import { Link, useNavigate } from "react-router-dom";
-  import * as Yup from "yup";
-  import $axios from "../lib/axios.instance";
-  import PersonIcon from '@mui/icons-material/Person';
-  
-  const Login = () => {
-  const navigate = useNavigate()
-    const {isLoading,isError,error,mutate} =useMutation(
-      {
-        mutationKey:["login"],
-        mutationFn:async(values)=>{
-  return await $axios.post("http://localhost:8080/user/login",values)
-        },
-        onSuccess:(response)=>{
-          localStorage.setItem("token",response?.data?.token)
-          localStorage.setItem("email",response?.data?.user?.email)
-          localStorage.setItem("firstName",response?.data?.user?.firstName)
-          localStorage.setItem("lastName",response?.data?.user?.lastName)
-          navigate("/home")
-        },
-        onError:(error)=>{
-          console.log(error?.response?.data?.message)
-        }
-      }
-    )
-    return (
-      <>
-      <Box sx={{background:"", height:"450px",display:"flex",alignItems:"center", justifyContent:"center",padding:"2rem"}}>
+  Button,
+  FormControl,
+  FormHelperText,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { Formik } from "formik";
+import React from "react";
+import { useMutation } from "react-query";
+import { Link, useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import $axios from "../lib/axios.instance";
+import PersonIcon from "@mui/icons-material/Person";
+import Loading from "./Loading";
+import { useDispatch } from "react-redux";
+import { openSuccessSnackbar } from "../store/slices/snackBarSlice";
+
+const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const { isLoading, isError, error, mutate } = useMutation({
+    mutationKey: ["login"],
+    mutationFn: async (values) => {
+      return await $axios.post("http://localhost:8080/user/login", values);
+    },
+    onSuccess: (response) => {
+      localStorage.setItem("token", response?.data?.token);
+      localStorage.setItem("email", response?.data?.user?.email);
+      localStorage.setItem("firstName", response?.data?.user?.firstName);
+      localStorage.setItem("lastName", response?.data?.user?.lastName);
+      navigate("/home");
+      dispatch(openSuccessSnackbar(response?.data?.message))
+    },
+    onError: (error) => {
+      console.log(error?.response?.data?.message);
+    },
+  });
+  if (isLoading) {
+    return <Loading/>;
+  }
+  return (
+    <>
+      <Box
+        sx={{
+          background: "",
+          height: "450px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "2rem",
+        }}
+      >
         <Formik
           initialValues={{
             email: "",
@@ -48,7 +63,7 @@ import {
             password: Yup.string().required("Password is required.").trim(),
           })}
           onSubmit={(values) => {
-            mutate(values)
+            mutate(values);
           }}
         >
           {(formik) => (
@@ -71,7 +86,7 @@ import {
               >
                 Sign In
               </Typography>
-  
+
               {/* // user Name or email */}
               <FormControl>
                 <TextField
@@ -84,7 +99,7 @@ import {
                   <FormHelperText error>{formik.errors.email}</FormHelperText>
                 ) : null}
               </FormControl>
-  
+
               {/* // For user password*/}
               <FormControl>
                 <TextField
@@ -94,25 +109,22 @@ import {
                   {...formik.getFieldProps("password")}
                 ></TextField>
                 {formik.touched.password && formik.errors.password ? (
-                  <FormHelperText error>{formik.errors.password}</FormHelperText>
+                  <FormHelperText error>
+                    {formik.errors.password}
+                  </FormHelperText>
                 ) : null}
               </FormControl>
-  
-              <Button
-                type="submit"
-                variant="contained"
-              >
+
+              <Button type="submit" variant="contained">
                 Login
               </Button>
               <Link to="/register">New User? Register</Link>
             </form>
           )}
         </Formik>
-  
-        </Box>
-      </>
-    );
-  };
-  
-  export default Login;
-  
+      </Box>
+    </>
+  );
+};
+
+export default Login;

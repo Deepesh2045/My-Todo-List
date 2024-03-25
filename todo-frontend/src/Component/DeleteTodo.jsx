@@ -2,14 +2,19 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { Box, IconButton, Typography } from "@mui/material";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import $axios from "../lib/axios.instance";
 import { useMutation, useQueryClient } from "react-query";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { useDispatch } from "react-redux";
+import { openSuccessSnackbar } from "../store/slices/snackBarSlice";
 
 const DeleteTodo = (props) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const dispatch = useDispatch()
 
   // For Delete
   const params = useParams();
@@ -20,10 +25,16 @@ const DeleteTodo = (props) => {
       return await $axios.delete(`http://localhost:8080/delete/${_id}`);
     },
     onSuccess: (response) => {
+      dispatch(openSuccessSnackbar(response?.data?.message))
       queryClient.invalidateQueries("todo-list");
       
     },
   });
+
+  // console.log(props.createdAt)
+
+  // dayjs.extend(relativeTime)
+  // const newTime = dayjs((props.createdAt)-new Date()).from()
 
   return (
     <>

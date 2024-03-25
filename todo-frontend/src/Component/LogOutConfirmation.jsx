@@ -1,19 +1,14 @@
-import * as React from "react";
+import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { IconButton, Typography } from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout";
+import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Tooltip from "@mui/material/Tooltip";
 
 
 const LogOutConfirmation = (props) => {
-    console.log(props)
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
 

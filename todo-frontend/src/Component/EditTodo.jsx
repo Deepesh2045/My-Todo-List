@@ -13,12 +13,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import $axios from "../lib/axios.instance";
 import Loading from "./Loading";
+import { useDispatch } from "react-redux";
+import { openSuccessSnackbar } from "../store/slices/snackBarSlice";
 
 const EditTodo = () => {
   const params = useParams();
   const taskId = params?.id;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const dispatch = useDispatch()
 
 
   const { isLoading, isError, error, data } = useQuery({
@@ -34,10 +37,12 @@ const EditTodo = () => {
     mutationFn: async (values) => {
       return await $axios.put(`/edit/${taskId}`, values);
     },
-    onSuccess: (res) => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries("todo-list");
       navigate("/home");
+      dispatch(openSuccessSnackbar(response?.data?.message))
     },
+  
   });
 if(isLoading || editLoading){
   return <Loading/>
